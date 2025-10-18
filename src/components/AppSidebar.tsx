@@ -1,4 +1,4 @@
-import { Home, ShoppingBag, Info, Truck } from "lucide-react";
+import { Home, ShoppingBag, Info } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -15,7 +15,6 @@ const items = [
   { title: "Home", url: "/", icon: Home },
   { title: "Shop", url: "/shop", icon: ShoppingBag },
   { title: "About", url: "/about", icon: Info },
-  { title: "Shipping", url: "/shipping", icon: Truck },
 ];
 
 export function AppSidebar() {

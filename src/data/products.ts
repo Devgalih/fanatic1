@@ -15,6 +15,7 @@ export interface Product {
   bestseller?: boolean;
   newRelease?: boolean;
   releaseVolume?: string;
+  batch: "Batch 1" | "Batch 2" | "Batch 3";
 }
 
 export interface Review {
@@ -26,6 +27,7 @@ export interface Review {
 }
 
 export const products: Product[] = [
+  // Batch 1 Products
   {
     id: "1",
     name: "Essential Black Tee",
@@ -38,6 +40,7 @@ export const products: Product[] = [
     bestseller: true,
     newRelease: true,
     releaseVolume: "New Release Vol.1",
+    batch: "Batch 1",
     reviews: [
       {
         id: "r1",
@@ -67,6 +70,7 @@ export const products: Product[] = [
     bestseller: true,
     newRelease: true,
     releaseVolume: "New Release Vol.2",
+    batch: "Batch 1",
     reviews: [
       {
         id: "r3",
@@ -88,6 +92,7 @@ export const products: Product[] = [
     rating: 4.7,
     newRelease: true,
     releaseVolume: "New Release Vol.3",
+    batch: "Batch 1",
     reviews: [
       {
         id: "r4",
@@ -107,6 +112,7 @@ export const products: Product[] = [
     description: "Timeless white t-shirt made from premium organic cotton. A wardrobe staple.",
     sizes: ["S", "M", "L", "XL"],
     rating: 4.6,
+    batch: "Batch 1",
     reviews: []
   },
   {
@@ -118,6 +124,7 @@ export const products: Product[] = [
     description: "Comfortable joggers with a modern slim fit. Perfect for casual wear.",
     sizes: ["28", "30", "32", "34"],
     rating: 4.5,
+    batch: "Batch 1",
     reviews: []
   },
   {
@@ -130,6 +137,157 @@ export const products: Product[] = [
     sizes: ["7", "8", "9", "10", "11"],
     rating: 4.8,
     bestseller: true,
+    batch: "Batch 1",
+    reviews: []
+  },
+  
+  // Batch 2 Products
+  {
+    id: "7",
+    name: "Vintage Graphic Tee",
+    price: 48.00,
+    image: productTshirt,
+    category: "T-Shirts",
+    description: "Retro-inspired graphic tee with vintage aesthetics. Made from soft cotton blend.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    rating: 4.7,
+    batch: "Batch 2",
+    reviews: []
+  },
+  {
+    id: "8",
+    name: "Street Denim Pants",
+    price: 95.00,
+    image: productPants,
+    category: "Pants",
+    description: "Modern denim pants with streetwear influence. Comfortable fit with contemporary styling.",
+    sizes: ["28", "30", "32", "34", "36"],
+    rating: 4.6,
+    batch: "Batch 2",
+    reviews: []
+  },
+  {
+    id: "9",
+    name: "Urban Boots",
+    price: 145.00,
+    image: productShoes,
+    category: "Shoes",
+    description: "Stylish urban boots perfect for city exploration. Durable construction meets modern design.",
+    sizes: ["7", "8", "9", "10", "11", "12"],
+    rating: 4.8,
+    bestseller: true,
+    batch: "Batch 2",
+    reviews: []
+  },
+  {
+    id: "10",
+    name: "Oversized Hoodie",
+    price: 85.00,
+    image: productTshirt,
+    category: "T-Shirts",
+    description: "Comfortable oversized hoodie with relaxed fit. Perfect for layering or standalone wear.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    rating: 4.9,
+    batch: "Batch 2",
+    reviews: []
+  },
+  {
+    id: "11",
+    name: "Tapered Chinos",
+    price: 78.00,
+    image: productPants,
+    category: "Pants",
+    description: "Smart casual chinos with tapered fit. Versatile for both casual and semi-formal occasions.",
+    sizes: ["28", "30", "32", "34", "36"],
+    rating: 4.5,
+    batch: "Batch 2",
+    reviews: []
+  },
+  {
+    id: "12",
+    name: "Canvas Sneakers",
+    price: 98.00,
+    image: productShoes,
+    category: "Shoes",
+    description: "Classic canvas sneakers with modern comfort technology. Timeless style meets contemporary comfort.",
+    sizes: ["7", "8", "9", "10", "11"],
+    rating: 4.4,
+    batch: "Batch 2",
+    reviews: []
+  },
+
+  // Batch 3 Products
+  {
+    id: "13",
+    name: "Minimalist Tank Top",
+    price: 35.00,
+    image: productTshirt,
+    category: "T-Shirts",
+    description: "Clean minimalist tank top perfect for layering or summer wear. Premium cotton construction.",
+    sizes: ["S", "M", "L", "XL"],
+    rating: 4.6,
+    batch: "Batch 3",
+    reviews: []
+  },
+  {
+    id: "14",
+    name: "Wide Leg Trousers",
+    price: 92.00,
+    image: productPants,
+    category: "Pants",
+    description: "Contemporary wide leg trousers with flowing silhouette. Perfect for modern street style.",
+    sizes: ["28", "30", "32", "34", "36"],
+    rating: 4.7,
+    batch: "Batch 3",
+    reviews: []
+  },
+  {
+    id: "15",
+    name: "Platform Sneakers",
+    price: 155.00,
+    image: productShoes,
+    category: "Shoes",
+    description: "Trendy platform sneakers with bold design. Statement piece for fashion-forward individuals.",
+    sizes: ["7", "8", "9", "10", "11", "12"],
+    rating: 4.8,
+    newRelease: true,
+    batch: "Batch 3",
+    reviews: []
+  },
+  {
+    id: "16",
+    name: "Long Sleeve Henley",
+    price: 52.00,
+    image: productTshirt,
+    category: "T-Shirts",
+    description: "Classic henley shirt with long sleeves. Versatile piece for any wardrobe.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    rating: 4.5,
+    batch: "Batch 3",
+    reviews: []
+  },
+  {
+    id: "17",
+    name: "Cargo Shorts",
+    price: 65.00,
+    image: productPants,
+    category: "Pants",
+    description: "Functional cargo shorts with multiple pockets. Perfect for outdoor activities and casual wear.",
+    sizes: ["28", "30", "32", "34", "36"],
+    rating: 4.4,
+    batch: "Batch 3",
+    reviews: []
+  },
+  {
+    id: "18",
+    name: "Slip-On Sneakers",
+    price: 88.00,
+    image: productShoes,
+    category: "Shoes",
+    description: "Convenient slip-on sneakers with elastic panels. Easy to wear with maximum comfort.",
+    sizes: ["7", "8", "9", "10", "11"],
+    rating: 4.3,
+    batch: "Batch 3",
     reviews: []
   }
 ];
