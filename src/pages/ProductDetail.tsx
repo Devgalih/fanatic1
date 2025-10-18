@@ -6,14 +6,17 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Star, ShoppingCart, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/context/CartContext";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addItem } = useCart();
   const product = products.find((p) => p.id === id);
   
   const [selectedSize, setSelectedSize] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(1);
 
   if (!product) {
     return (
@@ -35,7 +38,17 @@ export default function ProductDetail() {
       });
       return;
     }
-    
+    addItem(
+      {
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        size: selectedSize,
+        price: product.price,
+      },
+      quantity
+    );
+
     toast({
       title: "Added to cart",
       description: `${product.name} (${selectedSize}) has been added to your cart.`,
@@ -51,8 +64,17 @@ export default function ProductDetail() {
       });
       return;
     }
-    
-    navigate("/cart");
+    addItem(
+      {
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        size: selectedSize,
+        price: product.price,
+      },
+      quantity
+    );
+    navigate("/checkout");
   };
 
   return (
@@ -126,7 +148,27 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          <div className="flex gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-muted-foreground">Quantity</span>
+              <div className="flex items-center border border-border rounded-md overflow-hidden">
+                <button
+                  className="px-3 py-2 hover:bg-accent"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  aria-label="Decrease quantity"
+                >
+                  -
+                </button>
+                <span className="px-4 select-none">{quantity}</span>
+                <button
+                  className="px-3 py-2 hover:bg-accent"
+                  onClick={() => setQuantity((q) => Math.min(99, q + 1))}
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+              </div>
+            </div>
             <Button
               variant="hero"
               size="lg"

@@ -20,6 +20,7 @@ export default function Shop() {
   );
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState([0, 150]);
+  const [showFilters, setShowFilters] = useState<boolean>(true);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -62,11 +63,18 @@ export default function Shop() {
   };
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="flex gap-8">
+    <div className="min-h-screen p-4 md:p-8">
+      <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
+        {/* Mobile Filter Toggle */}
+        <div className="lg:hidden">
+          <Button variant="outline" className="w-full mb-4" onClick={() => setShowFilters((s) => !s)}>
+            {showFilters ? "Hide Filters" : "Show Filters"}
+          </Button>
+        </div>
+
         {/* Filters Sidebar */}
-        <aside className="w-64 shrink-0">
-          <div className="sticky top-24 space-y-8">
+        <aside className="lg:w-64 lg:shrink-0" data-visible={showFilters}>
+          <div className="lg:sticky lg:top-24 space-y-8" hidden={!showFilters && typeof window !== "undefined" && window.innerWidth < 1024}>
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Filters</h2>
               <Button variant="ghost" size="sm" onClick={clearFilters}>
@@ -152,7 +160,7 @@ export default function Shop() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
               {filteredProducts.map((product) => (
                 <ProductCard
                   key={product.id}

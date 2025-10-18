@@ -1,44 +1,20 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  size: string;
-  quantity: number;
-}
+import { useCart } from "@/context/CartContext";
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const navigate = useNavigate();
+  const { items: cartItems, updateQuantity, removeItem } = useCart();
 
-  const updateQuantity = (id: string, delta: number) => {
-    setCartItems((items) =>
-      items
-        .map((item) =>
-          item.id === id
-            ? { ...item, quantity: Math.max(0, item.quantity + delta) }
-            : item
-        )
-        .filter((item) => item.quantity > 0)
-    );
+  const handleAdjust = (id: string, size: string, delta: number) => {
+    const target = cartItems.find((i) => i.id === id && i.size === size);
+    if (!target) return;
+    const nextQty = Math.max(0, target.quantity + delta);
+    updateQuantity(id, size, nextQty);
   };
-
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const shipping = subtotal > 0 ? 10 : 0;
-  const total = subtotal + shipping;
 
   if (cartItems.length === 0) {
     return (
@@ -87,7 +63,7 @@ export default function Cart() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeItem(item.id, item.size)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -98,7 +74,7 @@ export default function Cart() {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8"
-                            onClick={() => updateQuantity(item.id, -1)}
+                            onClick={() => handleAdjust(item.id, item.size, -1)}
                           >
                             <Minus className="h-3 w-3" />
                           </Button>
@@ -107,7 +83,7 @@ export default function Cart() {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8"
-                            onClick={() => updateQuantity(item.id, 1)}
+                            onClick={() => handleAdjust(item.id, item.size, 1)}
                           >
                             <Plus className="h-3 w-3" />
                           </Button>
@@ -129,19 +105,19 @@ export default function Cart() {
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>${cartItems.reduce((s, i) => s + i.price * i.quantity, 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Shipping</span>
-                    <span>${shipping.toFixed(2)}</span>
+                    <span>Calculated at checkout</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-primary">${total.toFixed(2)}</span>
+                    <span className="text-primary">${cartItems.reduce((s, i) => s + i.price * i.quantity, 0).toFixed(2)}</span>
                   </div>
                 </div>
-                <Button variant="hero" size="lg" className="w-full mb-3">
+                <Button variant="hero" size="lg" className="w-full mb-3" onClick={() => navigate("/checkout")}>
                   Checkout
                 </Button>
                 <Link to="/shop">

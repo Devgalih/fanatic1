@@ -1,4 +1,4 @@
-import { Home, ShoppingBag } from "lucide-react";
+import { Home, ShoppingBag, Info, Truck } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -14,6 +14,8 @@ import {
 const items = [
   { title: "Home", url: "/", icon: Home },
   { title: "Shop", url: "/shop", icon: ShoppingBag },
+  { title: "About", url: "/about", icon: Info },
+  { title: "Shipping", url: "/shipping", icon: Truck },
 ];
 
 export function AppSidebar() {
@@ -25,7 +27,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <div className="px-4 py-6">
             <h1 className="text-2xl font-bold tracking-wider bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              {open ? "PREFACE" : "P"}
+              {open ? "fanatic hearts" : "f"}
             </h1>
           </div>
           <SidebarGroupContent>

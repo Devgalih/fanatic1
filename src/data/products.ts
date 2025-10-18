@@ -13,6 +13,8 @@ export interface Product {
   rating: number;
   reviews: Review[];
   bestseller?: boolean;
+  newRelease?: boolean;
+  releaseVolume?: string;
 }
 
 export interface Review {
@@ -34,6 +36,8 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL", "XXL"],
     rating: 4.8,
     bestseller: true,
+    newRelease: true,
+    releaseVolume: "New Release Vol.1",
     reviews: [
       {
         id: "r1",
@@ -61,6 +65,8 @@ export const products: Product[] = [
     sizes: ["28", "30", "32", "34", "36"],
     rating: 4.9,
     bestseller: true,
+    newRelease: true,
+    releaseVolume: "New Release Vol.2",
     reviews: [
       {
         id: "r3",
@@ -80,6 +86,8 @@ export const products: Product[] = [
     description: "Minimalist black sneakers designed for urban exploration. Combines comfort with sleek aesthetics.",
     sizes: ["7", "8", "9", "10", "11", "12"],
     rating: 4.7,
+    newRelease: true,
+    releaseVolume: "New Release Vol.3",
     reviews: [
       {
         id: "r4",
