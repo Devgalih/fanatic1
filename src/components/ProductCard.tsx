@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
+import { formatIDR } from "@/lib/utils";
 
 interface ProductCardProps {
   id: string;
@@ -9,10 +10,11 @@ interface ProductCardProps {
   price: number;
   image: string;
   category: string;
+  release_tag?: string;
   onAddToCart?: () => void;
 }
 
-export function ProductCard({ id, name, price, image, category, onAddToCart }: ProductCardProps) {
+export function ProductCard({ id, name, price, image, category, release_tag, onAddToCart }: ProductCardProps) {
   return (
     <Card className="group overflow-hidden border-border bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-glow">
       <Link to={`/product/${id}`}>
@@ -25,7 +27,14 @@ export function ProductCard({ id, name, price, image, category, onAddToCart }: P
         </div>
       </Link>
       <CardContent className="p-4">
-        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{category}</p>
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider">{category}</p>
+          {release_tag && (
+            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-md font-medium">
+              {release_tag}
+            </span>
+          )}
+        </div>
         <Link to={`/product/${id}`}>
           <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
             {name}
@@ -33,7 +42,7 @@ export function ProductCard({ id, name, price, image, category, onAddToCart }: P
         </Link>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex items-center justify-between">
-        <p className="text-lg font-bold text-foreground">${price.toFixed(2)}</p>
+        <p className="text-lg font-bold text-foreground">{formatIDR(price)}</p>
         <Button
           size="sm"
           variant="ghost"

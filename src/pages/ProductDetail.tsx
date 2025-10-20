@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Star, ShoppingCart, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { formatIDR } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 
 export default function ProductDetail() {
@@ -58,8 +59,8 @@ export default function ProductDetail() {
   const handleBuyNow = () => {
     if (!selectedSize) {
       toast({
-        title: "Please select a size",
-        description: "Choose a size before purchasing.",
+        title: "Pilih ukuran terlebih dahulu",
+        description: "Silakan pilih ukuran produk sebelum melanjutkan.",
         variant: "destructive",
       });
       return;
@@ -76,6 +77,7 @@ export default function ProductDetail() {
     );
     navigate("/checkout");
   };
+
 
   return (
     <div className="min-h-screen p-8">
@@ -122,7 +124,7 @@ export default function ProductDetail() {
                 ({product.rating}) • {product.reviews.length} reviews
               </span>
             </div>
-            <p className="text-3xl font-bold text-primary">${product.price.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-primary">{formatIDR(product.price)}</p>
           </div>
 
           <Separator />
@@ -150,7 +152,7 @@ export default function ProductDetail() {
 
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground">Quantity</span>
+              <span className="text-sm text-muted-foreground">Jumlah</span>
               <div className="flex items-center border border-border rounded-md overflow-hidden">
                 <button
                   className="px-3 py-2 hover:bg-accent"
@@ -176,7 +178,7 @@ export default function ProductDetail() {
               onClick={handleAddToCart}
             >
               <ShoppingCart className="mr-2 h-5 w-5" />
-              Add to Cart
+              Tambah ke Keranjang
             </Button>
             <Button
               variant="outline"
@@ -184,7 +186,7 @@ export default function ProductDetail() {
               className="flex-1 hover:border-primary"
               onClick={handleBuyNow}
             >
-              Buy Now
+              Beli Sekarang
             </Button>
           </div>
 

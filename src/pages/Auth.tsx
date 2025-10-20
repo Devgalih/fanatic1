@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { authApi, api } from "@/lib/api";
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -16,15 +17,39 @@ export default function Auth() {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      const response = await authApi.login({ email, password });
+      
+      // Store token
+      api.setToken(response.access_token);
+      
+      // Store user info
+      localStorage.setItem('user', JSON.stringify(response.user));
+      
       toast({
         title: "Welcome back!",
-        description: "You have successfully logged in.",
+        description: `Logged in as ${response.user.full_name || response.user.username}`,
       });
+      
+      // Redirect to admin if user is admin, otherwise home
+      if (response.user.is_admin) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: error instanceof Error ? error.message : "Invalid credentials",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-      navigate("/");
-    }, 1000);
+    }
   };
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -64,8 +89,9 @@ export default function Auth() {
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
-                    placeholder="you@example.com"
+                    placeholder="admin@darkchic.com"
                     required
                     className="bg-card"
                   />
@@ -74,8 +100,9 @@ export default function Auth() {
                   <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
+                    name="password"
                     type="password"
-                    placeholder="••••••••"
+                    placeholder="admin123"
                     required
                     className="bg-card"
                   />

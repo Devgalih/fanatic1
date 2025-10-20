@@ -118,9 +118,9 @@ export default function Home() {
                 {...product}
                 onAddToCart={() => handleAddToCart(product.name)}
               />
-              {product.releaseVolume && (
+              {product.release_tag && (
                 <div className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-md font-medium">
-                  {product.releaseVolume}
+                  {product.release_tag}
                 </div>
               )}
             </div>

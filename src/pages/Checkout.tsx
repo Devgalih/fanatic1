@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { formatIDR } from "@/lib/utils";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ export default function Checkout() {
                     </div>
                     <div className="text-right">
                       <p>x{item.quantity}</p>
-                      <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+                      <p className="font-semibold">{formatIDR(item.price * item.quantity)}</p>
                     </div>
                   </div>
                 ))}
@@ -77,7 +78,7 @@ export default function Checkout() {
               <Separator />
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                <span className="font-semibold">{formatIDR(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>

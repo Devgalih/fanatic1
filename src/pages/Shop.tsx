@@ -13,26 +13,26 @@ import gopayLogo from "@/assets/payments/gopay.png";
 import shopeepayLogo from "@/assets/payments/shopeepay.png";
 import qrisLogo from "@/assets/payments/qris.png";
 
-const batches = ["Batch 1", "Batch 2", "Batch 3"];
+const releaseTags = ["vol 1", "vol 2", "vol 3"];
 
 export default function Shop() {
   const { toast } = useToast();
   
-  const [selectedBatches, setSelectedBatches] = useState<string[]>([]);
+  const [selectedReleaseTags, setSelectedReleaseTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState<boolean>(true);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const batchMatch =
-        selectedBatches.length === 0 || selectedBatches.includes(product.batch);
+      const releaseTagMatch =
+        selectedReleaseTags.length === 0 || selectedReleaseTags.includes(product.release_tag);
       
-      return batchMatch;
+      return releaseTagMatch;
     });
-  }, [selectedBatches]);
+  }, [selectedReleaseTags]);
 
-  const handleBatchToggle = (batch: string) => {
-    setSelectedBatches((prev) =>
-      prev.includes(batch) ? prev.filter((b) => b !== batch) : [...prev, batch]
+  const handleReleaseTagToggle = (releaseTag: string) => {
+    setSelectedReleaseTags((prev) =>
+      prev.includes(releaseTag) ? prev.filter((tag) => tag !== releaseTag) : [...prev, releaseTag]
     );
   };
 
@@ -44,7 +44,7 @@ export default function Shop() {
   };
 
   const clearFilters = () => {
-    setSelectedBatches([]);
+    setSelectedReleaseTags([]);
   };
 
   return (
@@ -67,22 +67,22 @@ export default function Shop() {
                </Button>
              </div>
 
-             {/* Batch Filter */}
+             {/* Release Tag Filter */}
              <div>
-               <h3 className="font-medium mb-4">Batch</h3>
+               <h3 className="font-medium mb-4">Release Volume</h3>
                <div className="space-y-3">
-                 {batches.map((batch) => (
-                   <div key={batch} className="flex items-center space-x-2">
+                 {releaseTags.map((releaseTag) => (
+                   <div key={releaseTag} className="flex items-center space-x-2">
                      <Checkbox
-                       id={batch}
-                       checked={selectedBatches.includes(batch)}
-                       onCheckedChange={() => handleBatchToggle(batch)}
+                       id={releaseTag}
+                       checked={selectedReleaseTags.includes(releaseTag)}
+                       onCheckedChange={() => handleReleaseTagToggle(releaseTag)}
                      />
                      <Label
-                       htmlFor={batch}
+                       htmlFor={releaseTag}
                        className="text-sm cursor-pointer hover:text-primary transition-colors"
                      >
-                       {batch}
+                       {releaseTag}
                      </Label>
                    </div>
                  ))}
@@ -109,22 +109,22 @@ export default function Shop() {
             </div>
           ) : (
             <div className="space-y-12">
-              {/* Group products by batch */}
-              {["Batch 1", "Batch 2", "Batch 3"].map((batch) => {
-                const batchProducts = filteredProducts.filter(product => product.batch === batch);
-                if (batchProducts.length === 0) return null;
+              {/* Group products by release tag */}
+              {["vol 1", "vol 2", "vol 3"].map((releaseTag) => {
+                const tagProducts = filteredProducts.filter(product => product.release_tag === releaseTag);
+                if (tagProducts.length === 0) return null;
                 
                 return (
-                  <div key={batch} className="space-y-6">
+                  <div key={releaseTag} className="space-y-6">
                     <div className="flex items-center gap-4">
-                      <h2 className="text-2xl font-bold">{batch}</h2>
+                      <h2 className="text-2xl font-bold">Volume {releaseTag.split(' ')[1]}</h2>
                       <div className="h-px bg-border flex-1"></div>
                       <span className="text-sm text-muted-foreground">
-                        {batchProducts.length} {batchProducts.length === 1 ? "item" : "items"}
+                        {tagProducts.length} {tagProducts.length === 1 ? "item" : "items"}
                       </span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-                      {batchProducts.map((product) => (
+                      {tagProducts.map((product) => (
                         <ProductCard
                           key={product.id}
                           {...product}

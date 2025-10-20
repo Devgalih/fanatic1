@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { formatIDR } from "@/lib/utils";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ export default function Cart() {
                             <Plus className="h-3 w-3" />
                           </Button>
                         </div>
-                        <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                        <p className="font-bold">{formatIDR(item.price * item.quantity)}</p>
                       </div>
                     </div>
                   </div>
@@ -105,7 +106,7 @@ export default function Cart() {
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span>${cartItems.reduce((s, i) => s + i.price * i.quantity, 0).toFixed(2)}</span>
+                    <span>{formatIDR(cartItems.reduce((s, i) => s + i.price * i.quantity, 0))}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Shipping</span>
@@ -114,7 +115,7 @@ export default function Cart() {
                   <Separator />
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-primary">${cartItems.reduce((s, i) => s + i.price * i.quantity, 0).toFixed(2)}</span>
+                    <span className="text-primary">{formatIDR(cartItems.reduce((s, i) => s + i.price * i.quantity, 0))}</span>
                   </div>
                 </div>
                 <Button variant="hero" size="lg" className="w-full mb-3" onClick={() => navigate("/checkout")}>

@@ -1,0 +1,24 @@
+# Ignore SQLite database files
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Ignore backup files
+*.backup
+*.bak
+*_backup.db
+
+# Ignore CSV exports
+*.csv
+
+# Keep SQL scripts
+!*.sql
+
+# Keep Python scripts
+!*.py
+
+# Keep documentation
+!README.md
+!.gitignore
+
