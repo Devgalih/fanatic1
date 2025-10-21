@@ -15,6 +15,11 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface AdminLoginRequest {
+  username: string;
+  password: string;
+}
+
 export interface LoginResponse {
   access_token: string;
   token_type: string;
@@ -137,10 +142,32 @@ export const authApi = {
     return response.json();
   },
 
+  adminLogin: async (credentials: AdminLoginRequest): Promise<LoginResponse> => {
+    const formData = new URLSearchParams();
+    formData.append('username', credentials.username);
+    formData.append('password', credentials.password);
+
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Login failed');
+    }
+
+    return response.json();
+  },
+
   me: () => api.get<LoginResponse['user']>('/auth/me'),
   
   logout: () => {
     api.clearToken();
+    localStorage.removeItem('user');
   },
 };
 
@@ -210,9 +237,39 @@ export const promotionsApi = {
   validate: (code: string) => api.post('/promotions/validate', { code }),
 };
 
+// Analytics Types
+export interface DashboardStats {
+  total_revenue: number;
+  total_orders: number;
+  total_customers: number;
+  total_products: number;
+  pending_orders: number;
+  orders_this_month: number;
+  revenue_this_month: number;
+}
+
+export interface TopProduct {
+  id: number;
+  name: string;
+  price: string;
+  thumbnail: string | null;
+  total_sold: number;
+  total_revenue: number;
+}
+
+export interface RecentOrder {
+  id: number;
+  tracking_number: string;
+  customer_name: string;
+  total: string;
+  status: string;
+  payment_status: string;
+  created_at: string;
+}
+
 // Analytics
 export const analyticsApi = {
-  getDashboard: () => api.get('/analytics/dashboard'),
+  getDashboard: () => api.get<DashboardStats>('/analytics/dashboard'),
 
   getSales: (params?: { start_date?: string; end_date?: string }) => {
     const queryParams = new URLSearchParams();
@@ -224,6 +281,12 @@ export const analyticsApi = {
   },
 
   getProducts: () => api.get('/analytics/products'),
+  
+  getTopProducts: (limit: number = 10) => api.get<TopProduct[]>(`/analytics/top-products?limit=${limit}`),
+  
+  getRecentOrders: (limit: number = 10) => api.get<RecentOrder[]>(`/analytics/recent-orders?limit=${limit}`),
+  
+  getSalesChart: (days: number = 30) => api.get(`/analytics/sales-chart?days=${days}`),
 };
 
 // Categories

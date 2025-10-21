@@ -8,9 +8,6 @@ from app.core.config import settings
 from app.api.api import api_router
 from app.core.database import engine, Base
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,

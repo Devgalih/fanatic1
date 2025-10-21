@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     PORT: int = 8000
     
     # Database - MySQL
-    DATABASE_URL: str = "mysql+pymysql://root:@localhost/darkchic_db"
+    DATABASE_URL: str = "mysql+pymysql://root:@localhost/fanatichearts"
     
     # Security
     SECRET_KEY: str = "your-secret-key-change-in-production-please"

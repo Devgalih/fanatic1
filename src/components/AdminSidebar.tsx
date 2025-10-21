@@ -10,7 +10,7 @@ import {
   Store,
   Home
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Sidebar,
@@ -25,6 +25,8 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { authApi } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 const adminItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
@@ -37,9 +39,31 @@ const adminItems = [
 
 export function AdminSidebar() {
   const { open } = useSidebar();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  // Get user info from localStorage
+  const userStr = localStorage.getItem('user');
+  let user = { username: 'Admin', email: 'admin@darkchic.com', full_name: 'Admin' };
+  try {
+    if (userStr) {
+      user = JSON.parse(userStr);
+    }
+  } catch (error) {
+    console.error('Error parsing user data:', error);
+  }
+
+  const handleLogout = () => {
+    authApi.logout();
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+    });
+    navigate('/admin/login');
+  };
 
   return (
-    <Sidebar collapsible="icon" className="border-r">
+    <Sidebar collapsible="icon" variant="sidebar" className="border-r">
       <SidebarHeader className="border-b p-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/70 rounded-lg flex items-center justify-center shadow-md">
@@ -111,23 +135,33 @@ export function AdminSidebar() {
       <SidebarFooter className="border-t p-4">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-9 h-9 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow">
-            <span className="text-sm">AD</span>
+            <span className="text-sm">{user.username?.substring(0, 2).toUpperCase() || 'AD'}</span>
           </div>
           {open && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate">Admin</p>
-              <p className="text-xs text-muted-foreground truncate">admin@darkchic.com</p>
+              <p className="text-sm font-semibold truncate">{user.full_name || user.username}</p>
+              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
             </div>
           )}
         </div>
         {open && (
-          <Button variant="outline" size="sm" className="w-full justify-start gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full justify-start gap-2"
+            onClick={handleLogout}
+          >
             <LogOut className="h-4 w-4" />
             <span>Keluar</span>
           </Button>
         )}
         {!open && (
-          <Button variant="ghost" size="icon" className="w-full">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="w-full"
+            onClick={handleLogout}
+          >
             <LogOut className="h-4 w-4" />
           </Button>
         )}

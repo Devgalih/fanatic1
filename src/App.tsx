@@ -16,6 +16,7 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import AdminLayout from "./pages/admin/AdminLayout";
+import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
@@ -44,6 +45,9 @@ const App = () => (
             <Route path="about" element={<About />} />
             <Route path="auth" element={<Auth />} />
           </Route>
+
+          {/* Admin Login - standalone route */}
+          <Route path="/admin/login" element={<AdminLogin />} />
 
           {/* Admin Routes - dengan AdminSidebar */}
           <Route path="/admin" element={<AdminLayout />}>
