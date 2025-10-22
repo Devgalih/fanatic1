@@ -5,8 +5,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.core.database import get_db
-from app.models.product import Product as ProductModel, Category as CategoryModel
-from app.schemas.product import Product, ProductCreate, ProductUpdate, ProductList, Category, CategoryCreate
+from app.models.product import Product as ProductModel, Category as CategoryModel, Subcategory as SubcategoryModel, ProductVariation as ProductVariationModel
+from app.schemas.product import (
+    Product, ProductCreate, ProductUpdate, ProductList, 
+    Category, CategoryCreate, Subcategory, SubcategoryCreate,
+    ProductVariation, ProductVariationCreate
+)
+from app.api.endpoints.auth import get_current_admin_user
 
 router = APIRouter()
 
@@ -37,7 +42,8 @@ def get_release_tags(db: Session = Depends(get_db)):
 @router.post("/categories", response_model=Category)
 def create_category(
     category: CategoryCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin_user)
 ):
     """
     Create new category (Admin only)
@@ -47,6 +53,39 @@ def create_category(
     db.commit()
     db.refresh(db_category)
     return db_category
+
+# Subcategories
+@router.get("/subcategories", response_model=List[Subcategory])
+def get_subcategories(
+    category_id: Optional[int] = None,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    """
+    Get all subcategories
+    """
+    query = db.query(SubcategoryModel).filter(SubcategoryModel.is_active == True)
+    if category_id:
+        query = query.filter(SubcategoryModel.category_id == category_id)
+    
+    subcategories = query.offset(skip).limit(limit).all()
+    return subcategories
+
+@router.post("/subcategories", response_model=Subcategory)
+def create_subcategory(
+    subcategory: SubcategoryCreate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin_user)
+):
+    """
+    Create new subcategory (Admin only)
+    """
+    db_subcategory = SubcategoryModel(**subcategory.model_dump())
+    db.add(db_subcategory)
+    db.commit()
+    db.refresh(db_subcategory)
+    return db_subcategory
 
 # Products
 @router.get("/", response_model=ProductList)
@@ -123,11 +162,22 @@ def get_product_by_slug(slug: str, db: Session = Depends(get_db)):
 @router.post("/", response_model=Product)
 def create_product(
     product: ProductCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin_user)
 ):
     """
     Create new product (Admin only)
     """
+    # Generate SKU if not provided
+    if not product.sku:
+        import uuid
+        product.sku = f"PRD-{uuid.uuid4().hex[:8].upper()}"
+    
+    # Generate slug if not provided
+    if not product.slug:
+        import re
+        product.slug = re.sub(r'[^a-zA-Z0-9\-]', '-', product.name.lower()).strip('-')
+    
     db_product = ProductModel(**product.model_dump())
     db.add(db_product)
     db.commit()
@@ -156,7 +206,11 @@ def update_product(
     return db_product
 
 @router.delete("/{product_id}")
-def delete_product(product_id: int, db: Session = Depends(get_db)):
+def delete_product(
+    product_id: int, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin_user)
+):
     """
     Delete product (Admin only) - soft delete
     """
@@ -167,4 +221,86 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     db_product.is_active = False
     db.commit()
     return {"message": "Product deleted successfully"}
+
+# Product Variations
+@router.get("/{product_id}/variations", response_model=List[ProductVariation])
+def get_product_variations(
+    product_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get all variations for a product
+    """
+    variations = db.query(ProductVariationModel).filter(
+        ProductVariationModel.product_id == product_id,
+        ProductVariationModel.is_active == True
+    ).all()
+    return variations
+
+@router.post("/{product_id}/variations", response_model=ProductVariation)
+def create_product_variation(
+    product_id: int,
+    variation: ProductVariationCreate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin_user)
+):
+    """
+    Create new product variation (Admin only)
+    """
+    # Check if product exists
+    product = db.query(ProductModel).filter(ProductModel.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Generate SKU if not provided
+    if not variation.sku:
+        import uuid
+        variation.sku = f"VAR-{uuid.uuid4().hex[:8].upper()}"
+    
+    db_variation = ProductVariationModel(
+        product_id=product_id,
+        **variation.model_dump()
+    )
+    db.add(db_variation)
+    db.commit()
+    db.refresh(db_variation)
+    return db_variation
+
+@router.put("/variations/{variation_id}", response_model=ProductVariation)
+def update_product_variation(
+    variation_id: int,
+    variation_update: ProductVariationCreate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin_user)
+):
+    """
+    Update product variation (Admin only)
+    """
+    db_variation = db.query(ProductVariationModel).filter(ProductVariationModel.id == variation_id).first()
+    if not db_variation:
+        raise HTTPException(status_code=404, detail="Variation not found")
+    
+    for key, value in variation_update.model_dump(exclude_unset=True).items():
+        setattr(db_variation, key, value)
+    
+    db.commit()
+    db.refresh(db_variation)
+    return db_variation
+
+@router.delete("/variations/{variation_id}")
+def delete_product_variation(
+    variation_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin_user)
+):
+    """
+    Delete product variation (Admin only)
+    """
+    db_variation = db.query(ProductVariationModel).filter(ProductVariationModel.id == variation_id).first()
+    if not db_variation:
+        raise HTTPException(status_code=404, detail="Variation not found")
+    
+    db_variation.is_active = False
+    db.commit()
+    return {"message": "Variation deleted successfully"}
 

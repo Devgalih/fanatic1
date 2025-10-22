@@ -96,7 +96,7 @@ export default function ProductsManagement() {
             <p className="text-gray-600">Kelola katalog produk dan stok</p>
           </div>
           <div className="flex gap-2">
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={() => window.location.href = '/admin/products/add'}>
               <Plus className="h-4 w-4" />
               Tambah Produk
             </Button>
