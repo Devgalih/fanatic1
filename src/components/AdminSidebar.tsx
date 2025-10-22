@@ -8,7 +8,8 @@ import {
   Settings,
   LogOut,
   Store,
-  Home
+  Home,
+  Image
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ import { useToast } from "@/hooks/use-toast";
 const adminItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "Produk", url: "/admin/products", icon: Package },
+  { title: "Gambar", url: "/admin/images", icon: Image },
   { title: "Pesanan", url: "/admin/orders", icon: ShoppingCart },
   { title: "Pelanggan", url: "/admin/customers", icon: Users },
   { title: "Analitik", url: "/admin/analytics", icon: BarChart3 },

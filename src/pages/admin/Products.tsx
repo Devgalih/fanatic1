@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,14 +25,40 @@ import {
   Trash2, 
   Eye,
   Filter,
-  Download
+  Download,
+  Image as ImageIcon
 } from "lucide-react";
 import { products } from "@/data/products";
 import { formatIDR } from "@/lib/utils";
+import { uploadAPI, ImageInfo } from "@/lib/upload-api";
 
 export default function ProductsManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedReleaseTag, setSelectedReleaseTag] = useState("all");
+  const [uploadedImages, setUploadedImages] = useState<ImageInfo[]>([]);
+  const [loadingImages, setLoadingImages] = useState(false);
+
+  // Set token from localStorage
+  const token = localStorage.getItem('admin_token');
+  if (token) {
+    uploadAPI.setToken(token);
+  }
+
+  useEffect(() => {
+    loadUploadedImages();
+  }, []);
+
+  const loadUploadedImages = async () => {
+    try {
+      setLoadingImages(true);
+      const response = await uploadAPI.getImageList(0, 100);
+      setUploadedImages(response.files);
+    } catch (error) {
+      console.error('Failed to load images:', error);
+    } finally {
+      setLoadingImages(false);
+    }
+  };
 
   // Filter products based on search and release tag
   const filteredProducts = products.filter(product => {
@@ -69,10 +95,16 @@ export default function ProductsManagement() {
             <h1 className="text-3xl font-bold text-gray-900">Manajemen Produk</h1>
             <p className="text-gray-600">Kelola katalog produk dan stok</p>
           </div>
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            Tambah Produk
-          </Button>
+          <div className="flex gap-2">
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Tambah Produk
+            </Button>
+            <Button variant="outline" className="gap-2" onClick={() => window.location.href = '/admin/images'}>
+              <ImageIcon className="h-4 w-4" />
+              Kelola Gambar
+            </Button>
+          </div>
         </div>
 
         {/* Filter dan Pencarian */}
